@@ -1,0 +1,1261 @@
+<!DOCTYPE HTML>
+<html lang="pt-BR">
+<link rel="icon" href="https://sites.google.com/a/ci.ufpb.br/lmi/_/rsrc/1459564538865/config/customLogo.gif?revision=8" type="image/x-icon"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>LMI - PROTOCOLO DE COMUNICACAO</title>
+
+<head>
+
+<script language="javascript">
+
+function id( el ){
+  return document.getElementById( el );
+}
+	var xmlhttp = getXmlHttpRequest();
+	
+	function getXmlHttpRequest() {
+		if (window.XMLHttpRequest) {
+			return new XMLHttpRequest();
+		} else if (window.ActiveXObject) {
+			return new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+
+	function alteraURL(){
+	
+	var1  = id('IDS').value;
+    var2  = id('IDD').value;
+    var17 = id('COD').value;
+    var3  = id( 'D1').value;
+    var4  = id( 'D2').value;
+    var5  = id( 'D3').value;
+    var6  = id( 'D4').value;
+    var7  = id( 'D5').value;
+    var8  = id( 'D6').value;
+    var9  = id('PAD').value;
+    //var10 = id('SOH').value; //Não se faz necessário, já que é o "01" padrão de início do pacote
+    var11 = id('CRC').value; //Soma de todos os campos % 256 ... 
+  
+  var var1_ = parseInt(var1);
+  var var1_h = var1_.toString(16);
+  if (var1_h.length == 1) var1_h = "0" + var1_h;
+
+  var var2_ = parseInt(var2);
+  var var2_h = var2_.toString(16);
+  if (var2_h.length == 1) var2_h = "0" + var2_h;
+
+  var var17_ = parseInt(var17);
+  var var17_h = var17_.toString(16);
+  if (var17_h.length == 1) var17_h = "0" + var17_h;
+
+  var var3_ = parseInt(var3);
+  var var3_h = var3_.toString(16);
+  if (var3_h.length == 1) var3_h = "0" + var3_h;
+
+  var var4_ = parseInt(var4);
+  var var4_h = var4_.toString(16);
+  if (var4_h.length == 1) var4_h = "0" + var4_h;
+
+  var var5_ = parseInt(var5);
+  var var5_h = var5_.toString(16);
+  if (var5_h.length == 1) var5_h = "0" + var5_h;
+
+  var var6_ = parseInt(var6);
+  var var6_h = var6_.toString(16);
+  if (var6_h.length == 1) var6_h = "0" + var6_h;
+
+  var var7_ = parseInt(var7);
+  var var7_h = var7_.toString(16);
+  if (var7_h.length == 1) var7_h = "0" + var7_h;
+
+  var var8_ = parseInt(var8);
+  var var8_h = var8_.toString(16);
+  if (var8_h.length == 1) var8_h = "0" + var8_h;
+
+  var var9_ = parseInt(var9);
+  var var9_h = var9_.toString(16);
+  if (var9_h.length == 1) var9_h = "0" + var9_h;
+  
+  var soma_campos = var1_+var2_+var17_+var3_+var4_+var5_+var6_+var7_+var8_;
+  var var11_ = soma_campos % 256;
+  var var11_h = var11_.toString(16);
+  //if (var11_h.length == 1) var11_h = "0" + var11_h;
+  id('CRC').value = var11_;
+  
+  
+  var Dados = "01"+var1_h+var2_h+var17_h+var3_h+var4_h+var5_h+var6_h+var7_h+var8_h+var9_h+var11_h;
+      
+  var13 = id('Ip1').value;
+  var14 = id('Ip2').value;
+  var15 = id('Ip3').value; 
+  var16 = id('Ip4').value;
+  
+  if( var13 == "" && var14 == "" && var15 == "" && var16 == ""){alert("DIGITE UM IP VÁLIDO!!!");}
+  else if( var13 == "" ){alert("DIGITE UM IP VÁLIDO!!!");}
+  else if( var14 == "" ){alert("DIGITE UM IP VÁLIDO!!!");}
+  else if( var15 == "" ){alert("DIGITE UM IP VÁLIDO!!!");}
+  else if( var16 == "" ){alert("DIGITE UM IP VÁLIDO!!!");}
+  else{
+        var IP = "http://" + var13 + "." + var14 + "." + var15 + "." + var16 + "/";
+  
+        url = IP + Dados;
+		xmlhttp.open("POST", url, true);
+		xmlhttp.onreadystatechange = function(){
+		
+		if (xmlhttp.readyState==4){
+				//document.getElementById("Resposta_da_ESP").innerHTML = xmlhttp.responseText;
+				var Recebe = xmlhttp.responseText.toString();
+				
+				//document.getElementById('D1_r').value = Recebe;  Se quiser analisar o que está vindo, pode usar esta linha de código
+				//alert(Recebe);
+				
+				var str_ = Recebe.substr(67,8);
+				var str__= "Time Out";
+				
+				if( str_ == str__){
+				alert('TIME OUT - SEM RESPOSTA');
+				ConverteParaHexa();
+				}else{		
+				
+				var ver = Recebe.substr(21,28);
+				
+				if( ver == "01NaNNaNNaNffffffffffffffNaN"){
+				alert("DIGITE CAMPOS VÁLIDOS!!!");
+				}else{				
+				var D1_r = Recebe.substr(75,2);
+				var D1_r_ = parseInt(D1_r, 16);
+				id( 'D1_r' ).value = D1_r_;
+ 
+				var D2_r = Recebe.substr(77,2);
+				var D2_r_ = parseInt(D2_r, 16);
+				id( 'D2_r' ).value = D2_r_;
+ 
+				var D3_r = Recebe.substr(79,2);
+				var D3_r_ = parseInt(D3_r, 16);
+				id( 'D3_r' ).value = D3_r_;
+ 
+				var D4_r = Recebe.substr(81,2);
+				var D4_r_ = parseInt(D4_r, 16);
+				id( 'D4_r' ).value = D4_r_;
+ 
+				var D5_r = Recebe.substr(83,2);
+				var D5_r_ = parseInt(D5_r, 16);
+				id( 'D5_r' ).value = D5_r_;
+ 
+				var D6_r = Recebe.substr(85,2);
+				var D6_r_ = parseInt(D6_r, 16);
+				id( 'D6_r' ).value = D6_r_;
+ 
+				var PAD_r = Recebe.substr(87,2);
+				var PAD_r_ = parseInt(PAD_r, 16);
+				id( 'PAD_r' ).value = PAD_r_;
+ 
+				var CRC_r = Recebe.substr(89,2);
+				var CRC_r_ = parseInt(CRC_r, 16);
+				id( 'CRC_r' ).value = CRC_r_;
+
+				ConverteParaHexa();
+				document.getElementById("Resposta_da_ESP").innerHTML = xmlhttp.responseText;
+			   }
+			}
+		  }		  
+		}	
+     xmlhttp.send(null);
+	}
+  }
+	 
+	function Limpar(){
+	document.getElementById("Resposta_da_ESP").innerHTML=""; 
+	}
+
+	function Zerar(){
+	
+	id('IDS').value = "";
+	id('IDD').value = "";
+	id('COD').value = "";
+
+	id('D1' ).value = "";
+	id('D2' ).value = "";
+	id('D3' ).value = "";
+	id('D4' ).value = "";
+	id('D5' ).value = "";
+	id('D6' ).value = "";
+	id('PAD').value = "";
+	id('CRC').value = "";
+
+	id(' D1_hx').value = "";
+	id(' D2_hx').value = "";
+	id(' D3_hx').value = "";
+	id(' D4_hx').value = "";
+	id(' D5_hx').value = "";
+	id(' D6_hx').value = "";
+	id('PAD_hx').value = "";
+	id('CRC_hx').value = "";
+
+	id('D1_r' ).value = "";
+	id('D2_r' ).value = "";
+	id('D3_r' ).value = "";
+	id('D4_r' ).value = "";
+	id('D5_r' ).value = "";
+	id('D6_r' ).value = "";
+	id('PAD_r').value = "";
+	id('CRC_r').value = "";
+
+	id('D1_hx_r' ).value = "";
+	id('D2_hx_r' ).value = "";
+	id('D3_hx_r' ).value = "";
+	id('D4_hx_r' ).value = "";
+	id('D5_hx_r' ).value = "";
+	id('D6_hx_r' ).value = "";
+	id('PAD_hx_r').value = "";
+	id('CRC_hx_r').value = "";
+
+	}
+</script>
+
+
+<script language="javascript">
+
+function ChamarLink2() {
+ 
+	if (document.getElementById("COD").value == "79"){
+      document.getElementById("selectOK").value = "01";
+    }else if(document.getElementById("COD").value == "77"){
+	  document.getElementById("selectOK").value = "02";
+	}else if(document.getElementById("COD").value == "84"){
+	  document.getElementById("selectOK").value = "03";
+	}else if(document.getElementById("COD").value == "86"){
+	  document.getElementById("selectOK").value = "04";
+	}else if(document.getElementById("COD").value == "6" || document.getElementById("COD").value == "06"){
+	  document.getElementById("selectOK").value = "05";
+	}else if(document.getElementById("COD").value == "21" ){
+	  document.getElementById("selectOK").value = "06";
+	}else if(document.getElementById("COD").value == "82" ){
+	  document.getElementById("selectOK").value = "07";
+	}else if(document.getElementById("COD").value == "83" ){
+	  document.getElementById("selectOK").value = "08";
+	}else if(document.getElementById("COD").value == "81" ){
+	  document.getElementById("selectOK").value = "09";
+	}else if(document.getElementById("COD").value == "5" || document.getElementById("COD").value == "05"){
+	  document.getElementById("selectOK").value = "10";
+	}else if(document.getElementById("COD").value == "51" ){
+	  document.getElementById("selectOK").value = "11";
+	}else if(document.getElementById("COD").value == "52" ){
+	  document.getElementById("selectOK").value = "12";
+	}else if(document.getElementById("COD").value == "53" ){
+	  document.getElementById("selectOK").value = "13";
+	}else if(document.getElementById("COD").value == "54" ){
+	  document.getElementById("selectOK").value = "14";
+	}else if(document.getElementById("COD").value == "55" ){
+	  document.getElementById("selectOK").value = "15";
+	}else if(document.getElementById("COD").value == "56" ){
+	  document.getElementById("selectOK").value = "16";
+	}else if(document.getElementById("COD").value == " " ){
+	  document.getElementById("selectOK").value = " ";
+	}
+
+}
+
+ function ChamarLink() {
+
+    if (document.getElementById("selectOK").value == "01") {
+      document.getElementById("COD").value = "79";
+    }else if (document.getElementById("selectOK").value == "02"){
+      document.getElementById("COD").value = "77";
+    
+    }else if (document.getElementById("selectOK").value  == "03"){
+      document.getElementById("COD").value = "84";
+    
+    } else if (document.getElementById("selectOK").value == "04"){
+      document.getElementById("COD").value = "86";
+    
+    } else if (document.getElementById("selectOK").value == "05"){
+      document.getElementById("COD").value = "6";
+    
+    } else if (document.getElementById("selectOK").value == "06"){
+      document.getElementById("COD").value = "21";
+    
+    } else if (document.getElementById("selectOK").value == "07"){
+      document.getElementById("COD").value = "82";
+    
+    } else if (document.getElementById("selectOK").value == "08"){
+      document.getElementById("COD").value = "83";
+    
+    } else if (document.getElementById("selectOK").value == "09"){
+      document.getElementById("COD").value = "81";
+    
+    } else if (document.getElementById("selectOK").value == "10"){
+      document.getElementById("COD").value = "5";
+    
+    } else if (document.getElementById("selectOK").value == "11"){
+      document.getElementById("COD").value = "51";
+    
+    } else if (document.getElementById("selectOK").value == "12"){
+      document.getElementById("COD").value = "52";
+      
+      } else if (document.getElementById("selectOK").value == "13"){
+      document.getElementById("COD").value = "53";
+    
+    } else if (document.getElementById("selectOK").value == "14"){
+      document.getElementById("COD").value = "54";
+    
+    } else if (document.getElementById("selectOK").value == "15"){
+      document.getElementById("COD").value = "55";
+    
+    } else if (document.getElementById("selectOK").value == "16"){
+      document.getElementById("COD").value = "56";
+    }else{      document.getElementById("COD").value = " ";}
+    
+    }
+	
+function ConverteParaHexa(){
+		// parte do ENVIO
+		var D1 = document.getElementById("D1").value;
+		var D1_ = (+D1).toString(16);
+		document.getElementById(' D1_hx').value = D1_.toUpperCase();
+		
+		var D2 = document.getElementById("D2").value;
+		var D2_ = (+D2).toString(16);
+		document.getElementById(' D2_hx').value = D2_.toUpperCase();
+		
+		var D3 = document.getElementById("D3").value;
+		var D3_ = (+D3).toString(16);
+		document.getElementById(' D3_hx').value = D3_.toUpperCase();
+		
+		var D4 = document.getElementById("D4").value;
+		var D4_ = (+D4).toString(16);
+		document.getElementById(' D4_hx').value = D4_.toUpperCase();
+		
+		var D5 = document.getElementById("D5").value;
+		var D5_ = (+D5).toString(16);
+		document.getElementById(' D5_hx').value = D5_.toUpperCase();
+		
+		var D6 = document.getElementById("D6").value;
+		var D6_ = (+D6).toString(16);
+		document.getElementById(' D6_hx').value = D6_.toUpperCase();
+		
+		var PAD = document.getElementById("PAD").value;
+		var PAD_ = (+PAD).toString(16);
+		document.getElementById('PAD_hx').value = PAD_.toUpperCase();
+		
+		var CRC = document.getElementById("CRC").value;
+		var CRC_ = (+CRC).toString(16);
+		document.getElementById('CRC_hx').value = CRC_.toUpperCase();
+		
+		//Parte do RECEBIMENTO
+		var D1r = document.getElementById("D1_r").value;
+		var D1_r = (+D1r).toString(16);
+		document.getElementById('D1_hx_r').value = D1_r.toUpperCase();
+		
+		var D2r = document.getElementById("D2_r").value;
+		var D2_r = (+D2r).toString(16);
+		document.getElementById('D2_hx_r').value = D2_r.toUpperCase();
+		
+		var D3r = document.getElementById("D3_r").value;
+		var D3_r = (+D3r).toString(16);
+		document.getElementById('D3_hx_r').value = D3_r.toUpperCase();
+		
+		var D4r = document.getElementById("D4_r").value;
+		var D4_r = (+D4r).toString(16);
+		document.getElementById('D4_hx_r').value = D4_r.toUpperCase();
+		
+		var D5r = document.getElementById("D5_r").value;
+		var D5_r = (+D5r).toString(16);
+		document.getElementById('D5_hx_r').value = D5_r.toUpperCase();
+		
+		var D6r = document.getElementById("D6_r").value;
+		var D6_r = (+D6r).toString(16);
+		document.getElementById('D6_hx_r').value = D6_r.toUpperCase();
+		
+		var PADr = document.getElementById("PAD_r").value;
+		var PAD_r = (+PADr).toString(16);
+		document.getElementById('PAD_hx_r').value = PAD_r.toUpperCase();
+		
+		var CRCr = document.getElementById("CRC_r").value;
+		var CRC_r = (+CRCr).toString(16);
+		document.getElementById('CRC_hx_r').value = CRC_r.toUpperCase();	
+	}
+	
+
+
+
+function ConverteParaDecimal (){
+	//Parte do ENVIO
+		var D1_r  = id(' D1_hx').value;
+		var D1_r_ = parseInt(D1_r, 16);
+		id( 'D1' ).value = D1_r_;
+		
+		var D2_r  = id(' D2_hx').value;
+		var D2_r_ = parseInt(D2_r, 16);
+		id( 'D2' ).value = D2_r_;
+
+		var D3_r  = id(' D3_hx').value;
+		var D3_r_ = parseInt(D3_r, 16);
+		id( 'D3' ).value = D3_r_;
+
+		var D4_r  = id(' D4_hx').value;
+		var D4_r_ = parseInt(D4_r, 16);
+		id( 'D4' ).value = D4_r_;
+
+		var D5_r  = id(' D5_hx').value;
+		var D5_r_ = parseInt(D5_r, 16);
+		id( 'D5' ).value = D5_r_;
+
+		var D6_r  = id(' D6_hx').value;
+		var D6_r_ = parseInt(D6_r, 16);
+		id( 'D6' ).value = D6_r_;
+
+		var PAD  = id('PAD_hx').value;
+		var PAD_ = parseInt(PAD, 16);
+		id( 'PAD' ).value = PAD_;
+
+		var CRC  = id('CRC_hx').value;
+		var CRC_ = parseInt(CRC, 16);
+		id( 'CRC' ).value = CRC_;
+		
+	//Parte do RECEBIMENTO
+		var D1_rr  = id('D1_hx_r').value;
+		var D1_rr_ = parseInt(D1_rr, 16);
+		id( 'D1_r' ).value = D1_rr_;
+		
+		var D2_rr  = id('D2_hx_r').value;
+		var D2_rr_ = parseInt(D2_rr, 16);
+		id( 'D2_r' ).value = D2_rr_;
+		
+		var D3_rr  = id('D3_hx_r').value;
+		var D3_rr_ = parseInt(D3_rr, 16);
+		id( 'D3_r' ).value = D3_rr_;
+		
+		var D4_rr  = id('D4_hx_r').value;
+		var D4_rr_ = parseInt(D4_rr, 16);
+		id( 'D4_r' ).value = D4_rr_;
+		
+		var D5_rr  = id('D5_hx_r').value;
+		var D5_rr_ = parseInt(D5_rr, 16);
+		id( 'D5_r' ).value = D5_rr_;
+		
+		var D6_rr  = id('D6_hx_r').value;
+		var D6_rr_ = parseInt(D6_rr, 16);
+		id( 'D6_r' ).value = D6_rr_;
+		
+		var PADrr  = id('PAD_hx_r').value;
+		var PAD_rr = parseInt(PADrr, 16);
+		id( 'PAD_r' ).value = PAD_rr;
+
+		var CRCrr  = id('CRC_hx_r').value;
+		var CRC_rr = parseInt(CRCrr, 16);
+		id( 'CRC_r' ).value = CRC_rr;
+		
+	
+	}
+	
+	//1 2 4 8 16 32 64 128 #numeração dos relés em bin (referente em HEX)
+	//1 2 3 4  5  6  7  8  #numeração dos relés em dec
+	
+		function switch_releT() {
+    var checkBox = document.getElementById("switch_releT");
+    
+    if (checkBox.checked == true){
+        //Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+		//Parte do ENVIO
+		id( 'D1' ).value = 255;		
+
+		id( 'D2' ).value = 1;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+
+		document.getElementById("switch_rele1").checked = true;
+		document.getElementById("switch_rele2").checked = true;
+		document.getElementById("switch_rele3").checked = true;
+		document.getElementById("switch_rele4").checked = true;
+		document.getElementById("switch_rele5").checked = true;
+		document.getElementById("switch_rele6").checked = true;
+		document.getElementById("switch_rele7").checked = true;
+		document.getElementById("switch_rele8").checked = true;
+
+
+		alteraURL();		
+    } else {       
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 255;		
+
+		id( 'D2' ).value = 0;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+
+		document.getElementById("switch_rele1").checked = false;
+		document.getElementById("switch_rele2").checked = false;
+		document.getElementById("switch_rele3").checked = false;
+		document.getElementById("switch_rele4").checked = false;
+		document.getElementById("switch_rele5").checked = false;
+		document.getElementById("switch_rele6").checked = false;
+		document.getElementById("switch_rele7").checked = false;
+		document.getElementById("switch_rele8").checked = false;
+				
+		alteraURL();
+    }
+}
+	
+	function switch_rele1() {
+    var checkBox = document.getElementById("switch_rele1");
+    
+    if (checkBox.checked == true){
+        //Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+		//Parte do ENVIO
+		id( 'D1' ).value = 1;		
+
+		id( 'D2' ).value = 1;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+
+		alteraURL();		
+    } else {       
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 1;		
+
+		id( 'D2' ).value = 0;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+				
+		alteraURL();
+    }
+}
+
+		
+	function switch_rele2() {
+    var checkBox = document.getElementById("switch_rele2");
+if (checkBox.checked == true){
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 2;		
+
+		id( 'D2' ).value = 1;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;	
+		
+		alteraURL();
+} else {
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 2;		
+
+		id( 'D2' ).value = 0;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		alteraURL();
+	}
+}
+
+	function switch_rele3() {
+    var checkBox = document.getElementById("switch_rele3");
+if (checkBox.checked == true){
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 4;		
+
+		id( 'D2' ).value = 1;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		
+		alteraURL();
+} else {
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 4;		
+
+		id( 'D2' ).value = 0;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		
+		alteraURL();
+	}
+}
+
+	function switch_rele4() {
+    var checkBox = document.getElementById("switch_rele4");
+if (checkBox.checked == true){
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 8;		
+
+		id( 'D2' ).value = 1;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		
+		alteraURL();
+} else {
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 8;		
+
+		id( 'D2' ).value = 0;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		
+		alteraURL();
+	}
+}
+	
+	function switch_rele5() {
+    var checkBox = document.getElementById("switch_rele5");
+if (checkBox.checked == true){
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 16;		
+
+		id( 'D2' ).value = 1;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		
+		alteraURL();
+} else {
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 16;		
+
+		id( 'D2' ).value = 0;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		
+		alteraURL();
+	}
+}
+	
+	function switch_rele6() {
+    var checkBox = document.getElementById("switch_rele6");
+if (checkBox.checked == true){
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 32;		
+
+		id( 'D2' ).value = 1;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		alteraURL();
+} else {
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 32;		
+
+		id( 'D2' ).value = 0;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		
+		alteraURL();
+	}
+}
+		function switch_rele7() {
+    var checkBox = document.getElementById("switch_rele7");
+if (checkBox.checked == true){
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 64;		
+
+		id( 'D2' ).value = 1;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		alteraURL();
+} else {
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 64;		
+
+		id( 'D2' ).value = 0;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		
+		alteraURL();
+	}
+}
+	
+		function switch_rele8() {
+    var checkBox = document.getElementById("switch_rele8");
+if (checkBox.checked == true){
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 128;		
+
+		id( 'D2' ).value = 1;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		alteraURL();
+} else {
+	//Parte da origem e destino
+		id('IDD').value = 255;
+		id('IDS').value = 0;
+		id('COD').value = 79;
+		
+	//Parte do ENVIO
+		id( 'D1' ).value = 128;		
+
+		id( 'D2' ).value = 0;
+
+		id( 'D3' ).value = 255;
+
+		id( 'D4' ).value = 255;
+
+		id( 'D5' ).value = 255;
+
+		id( 'D6' ).value = 255;
+		
+		
+		alteraURL();
+	}
+}
+	
+</script>
+</head>
+
+<a href="http://lmi.ci.ufpb.br/" target="_blank">
+<img src="https://sites.google.com/a/ci.ufpb.br/lmi/_/rsrc/1459564538865/config/customLogo.gif?revision=8" alt="Lmi-link" width="200" height="100"></a>
+
+<style>
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+	color: black;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.button{
+     position: relative;
+    background-color: #FF0000;
+    border: none;
+    font-size: 12.8px;
+    color: #FFFFFF;
+    padding: 3.0px;
+    width: 75px;
+    text-align: center;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+}
+.button:after {
+    content: "";
+    background: #f1f000;
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px !important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+
+.button:active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
+}
+
+.button2{
+      position: relative;
+    background-color: black;
+    border: none;
+    font-size: 12.8px;
+    color: #FFFFFF;
+    padding: 3.0px;
+    width: 75px;
+    text-align: center;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+}
+.button2:after {
+    content: "";
+    background: #f1f000;
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px !important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+
+.button2:active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cc0000;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #009933;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #009933;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+
+<table>
+<td><b><br><font color="#228B22">Origem </font></br></b> 
+<input type="text" name="IDS" id="IDS" size="2" placeholder="0-255" maxlength="3" min=0 max=255></td>
+
+<td><b><br><font color="#228B22">Destino </font></br></b> 
+<input type="text" name="IDD" id="IDD" size="2" placeholder="0-255" maxlength="3" min=0 max=255></td>
+</table>
+
+<table>
+<td><b><br><font color="#B8860B">Instrucao Cod </font></br></b>
+<input type="text" name="COD" id="COD" size="2" onchange="ChamarLink2();" placeholder="0-255" maxlength="3" min=0 max=255></td>
+<td>
+	</br>
+	</br>
+<select id="selectOK" name="selectOK" onchange="ChamarLink();">
+    <option value="  ">Selecione                  </option>
+    <option value="01">Liga/Desl Dispositivo      </option>
+    <option value="02">Altera Nível de Potência   </option>
+    <option value="03">Solicita Medida do Sensor  </option>
+    <option value="04">Resposta do Sensor         </option>
+    <option value="05">ACK                        </option>
+    <option value="06">NACK                       </option>
+    <option value="07">RESET                      </option>
+    <option value="08">Solicita Setpoint          </option>
+    <option value="09">Altera Setpoint            </option>
+    <option value="10">Está Operacional?          </option>
+    <option value="11">Escreve 1 BYTE             </option>
+    <option value="12">Escreve 1 WORD             </option>
+    <option value="13">Escreve 2 WORD             </option>
+    <option value="14">Escreve N BYTES            </option>
+    <option value="15">Solicita N BYTES           </option>
+    <option value="16">Responde N BYTES           </option>
+</select></td>
+</table>
+
+<table><td>
+<font color="#00008B"><br><b>Dados Enviados</b></br></font>
+</td>
+</table>
+
+<table>
+<td>&emsp;
+	<font color="#00008B"> D1 </font>
+<td>&emsp;&ensp;
+	<font color="#00008B"> D2 </font>
+<td>&emsp;&ensp;&ensp;
+	<font color="#00008B"> D3 </font>
+<td>&emsp;&ensp;&ensp;
+	<font color="#00008B"> D4 </font>
+<td>&emsp;&ensp;&ensp;
+	<font color="#00008B"> D5 </font>
+<td>&emsp;&ensp;
+	<font color="#00008B"> D6 </font>
+<td>&emsp;&ensp;
+	<font color="#B8860B">PAD </font>
+<td>&emsp;&ensp;
+	<font color="#FF000"> CRC </font></td>
+</table>
+
+<table>
+<td>
+	<input type="text" name="D1"  id="D1"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td>
+	<input type="text" name="D2"  id="D2"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td>
+	<input type="text" name="D3"  id="D3"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td>
+	<input type="text" name="D4"  id="D4"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td>
+	<input type="text" name="D5"  id="D5"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td>
+	<input type="text" name="D6"  id="D6"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td>
+	<input type="text" name="PAD" id="PAD" value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td>
+	<input type="text" name="CRC" id="CRC" value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+</table>
+
+<table>
+<td><input type="text" name="D1_hx"  id=" D1_hx"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td><input type="text" name="D2_hx"  id=" D2_hx"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td><input type="text" name="D3_hx"  id=" D3_hx"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td><input type="text" name="D4_hx"  id=" D4_hx"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td><input type="text" name="D5_hx"  id=" D5_hx"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td><input type="text" name="D6_hx"  id=" D6_hx"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td><input type="text" name="PAD_hx" id="PAD_hx"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+<td><input type="text" name="CRC_hx" id="CRC_hx"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"  min=0 max=255></td>
+</table>
+
+<table><td>
+	<font color="#00008B"><b>Dados Recebidos</b></font>
+</td>
+</table>
+
+<table>
+<td>&emsp;
+	<font color="#00008B"> D1 </font>
+<td>&emsp;&ensp;
+	<font color="#00008B"> D2 </font>
+<td>&emsp;&ensp;&ensp;
+	<font color="#00008B"> D3 </font>
+<td>&emsp;&ensp;&ensp;
+	<font color="#00008B"> D4 </font>
+<td>&emsp;&ensp;&ensp;
+	<font color="#00008B"> D5 </font>
+<td>&emsp;&ensp;
+	<font color="#00008B"> D6 </font>
+<td>&emsp;&ensp;
+	<font color="#B8860B">PAD </font>
+<td>&emsp;&ensp;
+	<font color="#FF000"> CRC </font></td>
+</table>
+
+<table>
+<td>
+<input type="text" name="D1_r"  id="D1_r"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td>
+<input type="text" name="D2_r"  id="D2_r"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td>
+<input type="text" name="D3_r"  id="D3_r"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td>
+<input type="text" name="D4_r"  id="D4_r"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td>
+<input type="text" name="D5_r"  id="D5_r"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td>
+<input type="text" name="D6_r"  id="D6_r"  value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td>
+<input type="text" name="PAD_r" id="PAD_r" value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td>
+<input type="text" name="CRC_r" id="CRC_r" value="255" onchange="ConverteParaHexa();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+</table>
+
+<table>
+<td><input type="text" name="D1_hx_r"  id="D1_hx_r"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td><input type="text" name="D2_hx_r"  id="D2_hx_r"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td><input type="text" name="D3_hx_r"  id="D3_hx_r"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td><input type="text" name="D4_hx_r"  id="D4_hx_r"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td><input type="text" name="D5_hx_r"  id="D5_hx_r"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td><input type="text" name="D6_hx_r"  id="D6_hx_r"  value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td><input type="text" name="PAD_hx_r" id="PAD_hx_r" value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+<td><input type="text" name="CRC_hx_r" id="CRC_hx_r" value="FF" onchange="ConverteParaDecimal();" size="3" placeholder="0-255"   maxlength="3"    min=0 max=255></td>
+</table>
+
+<table>
+<td><b><font color="red">IP:</font></b></td>
+</table>
+
+<table>
+<td><input type="text" size="3" name="Ip1" id="Ip1"  value="150"  placeholder="0-255" maxlength="3"></td>
+<td><input type="text" size="3" name="Ip2" id="Ip2"  value="165"  placeholder="0-255" maxlength="3"></td>
+<td><input type="text" size="3" name="Ip3" id="Ip3"  value="202"  placeholder="0-255" maxlength="3"></td>
+<td><input type="text" size="3" name="Ip4" id="Ip4"  value="17"  placeholder="0-255" maxlength="3"></td>
+</table>
+
+<table>
+<td><button  class="button" onclick="alteraURL();">Enviar</button></td>
+<td><button  class="button" onclick="Limpar();">Limpar</button></td>
+<td><button  class="button" onclick="Zerar();"> Zerar </button></td>
+</table>
+
+<table>
+<td>
+<label class="switch">
+  <input type="checkbox" id="switch_rele1" onclick="switch_rele1()">
+  <span class="slider round"></span>
+</label></td>
+<td>
+<label class="switch">
+  <input type="checkbox" id="switch_rele2" onclick="switch_rele2()">
+  <span class="slider round"></span>
+</label></td>
+<td>
+<label class="switch">
+  <input type="checkbox" id="switch_rele3" onclick="switch_rele3()">
+  <span class="slider round"></span>
+</label></td>
+<td>
+<label class="switch">
+  <input type="checkbox" id="switch_rele4" onclick="switch_rele4()">
+  <span class="slider round"></span>
+</label></td>
+<td>
+<label class="switch">
+  <input type="checkbox" id="switch_rele5" onclick="switch_rele5()">
+  <span class="slider round"></span>
+</label></td>
+<td>
+<label class="switch">
+  <input type="checkbox" id="switch_rele6" onclick="switch_rele6()">
+  <span class="slider round"></span>
+</label></td>
+<td>
+<label class="switch">
+  <input type="checkbox" id="switch_rele7" onclick="switch_rele7()">
+  <span class="slider round"></span>
+</label></td>
+<td>
+<label class="switch">
+  <input type="checkbox" id="switch_rele8" onclick="switch_rele8()">
+  <span class="slider round"></span>
+</label></td>
+<td>
+<label class="switch">
+  <input type="checkbox" id="switch_releT" onclick="switch_releT()">
+  <span class="slider round"></span>
+</label></td>
+</table>
+
+<BODY bgcolor="#FFFFFF" text="#000000">
+	<span id="Resposta_da_ESP"></span>
+</BODY>
+
+</body>
+
+</html>
